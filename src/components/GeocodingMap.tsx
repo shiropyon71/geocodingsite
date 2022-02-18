@@ -126,7 +126,7 @@ const GeocodingMap = () => {
     setWindowProps(initWindowOptions);
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({address: geocodeTarget}, (results, status) => {
-      if (status === 'OK' && results != null) {
+      if (status === google.maps.GeocoderStatus.OK && results != null) {
         var markerOption : CustomMarkerOptions = {
           address: geocodeTarget,
           location: {
@@ -160,6 +160,9 @@ const GeocodingMap = () => {
           },        
         }
         setMapProps(mapSettings);
+      }
+      else if(status === google.maps.GeocoderStatus.ZERO_RESULTS) {
+        alert("検索した結果、座標が取得できませんでした。");
       }
     });
   }
@@ -196,7 +199,7 @@ const GeocodingMap = () => {
   
       geocoder.geocode({address: address}, (results, status) => {
   
-        if (status === 'OK' && results != null) {
+        if (status === google.maps.GeocoderStatus.OK && results != null) {
           location  = {
             address: address,
             location: {
@@ -206,8 +209,9 @@ const GeocodingMap = () => {
             isShowMarker: true
           }
           resolve(location);
-        }
-        else {
+        } else if (status === google.maps.GeocoderStatus.ZERO_RESULTS ) {
+          resolve(location);
+        }else {
           reject(location);
         }
       });
